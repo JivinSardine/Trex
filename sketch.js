@@ -14,6 +14,7 @@ var gameOverImg,restartImg
 
 function preload(){
   trex_running = loadAnimation("trex1.png","trex3.png","trex4.png");
+  trex_collided = loadAnimation("trex_collided.png");
   
   groundImage = loadImage("ground2.png");
   
@@ -61,7 +62,7 @@ function setup() {
   console.log("Hello" + 5);
   
   trex.setCollider("circle",0,0,40);
-  trex.debug = true
+  trex.debug = false;
   
   score = 0;
 }
@@ -70,8 +71,6 @@ function draw() {
   background(180);
   //displaying score
   text("Score: "+ score, 500,50);
-  
-    console.log("this is ",gameState)
 
   
   if(gameState === PLAY){
@@ -105,11 +104,14 @@ function draw() {
     }
   }
    else if (gameState === END) {
+      trex.changeAnimation("collided", trex_collided);
       ground.velocityX = 0;
       gameOver.visible = true;
-    restart.visible = true;
-     obstaclesGroup.setVelocityXEach(0);
-     cloudsGroup.setVelocityXEach(0);
+      restart.visible = true;
+      obstaclesGroup.setVelocityXEach(0);
+      cloudsGroup.setVelocityXEach(0);
+      obstaclesGroup.setLifetimeEach(-1);
+      cloudsGroup.setLifetimeEach(-1);
    }
   
  
