@@ -34,7 +34,7 @@ function preload(){
   
   jumpSound = loadSound("jump.mp3")
   dieSound = loadSound("die.mp3")
-  checkPointSound = loadSound("checkPoint.mp3")
+  checkPointSound = loadSound("checkpoint.mp3")
 }
 
 function setup() {
@@ -87,7 +87,7 @@ function draw() {
     gameOver.visible = false
     restart.visible = false
     //move the ground
-    ground.velocityX = -4;
+    ground.velocityX = -(4+score/200);
     //scoring
     score = score + Math.round(frameCount/60);
     
@@ -98,6 +98,7 @@ function draw() {
     //jump when the space key is pressed
     if(keyDown("space")&& trex.y >= 100) {
         trex.velocityY = -12;
+        jumpSound.play();
     }
     
     //add gravity
@@ -111,31 +112,35 @@ function draw() {
     
     if(obstaclesGroup.isTouching(trex)){
         gameState = END;
+        dieSound.play();
     }
   }
    else if (gameState === END) {
-    console.log("hey")
-    gameOver.visible = true;
-    restart.visible = true;
+     console.log("hey")
+      gameOver.visible = true;
+      restart.visible = true;
      
-    ground.velocityX = 0;
-    trex.velocityY = 0
+      ground.velocityX = 0;
+      trex.velocityY = 0
      
       //change the trex animation
-    trex.changeAnimation("collided", trex_collided);
+      trex.changeAnimation("collided", trex_collided);
      
       //set lifetime of the game objects so that they are never destroyed
     obstaclesGroup.setLifetimeEach(-1);
     cloudsGroup.setLifetimeEach(-1);
      
-    obstaclesGroup.setVelocityXEach(0);
-    cloudsGroup.setVelocityXEach(0);
+     obstaclesGroup.setVelocityXEach(0);
+     cloudsGroup.setVelocityXEach(0);
    }
   
  
   //stop trex from falling down
   trex.collide(invisibleGround);
   
+  if(score>0 && score%500 === 0){
+    checkPointSound.play();
+  }
   
   
   drawSprites();
@@ -144,7 +149,7 @@ function draw() {
 function spawnObstacles(){
  if (frameCount % 60 === 0){
    var obstacle = createSprite(400,165,10,40);
-   obstacle.velocityX = -6;
+   obstacle.velocityX = -(6+score/200);
    
     //generate random obstacles
     var rand = Math.round(random(1,6));
